@@ -1,5 +1,6 @@
 backend/node_modules
 backend/*.log*
+backend/.git
 frontend/herriot/node_modules
 frontend/herriot/*.log*
 frontend/herriot/.nuxt
@@ -8,4 +9,6 @@ frontend/herriot/.cache
 frontend/herriot/.output
 frontend/herriot/.env
 frontend/herriot/dist
+frontend/herriot/.git
 desktop/node_modules
+desktop/.git
