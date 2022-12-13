@@ -1,0 +1,10 @@
+backend/node_modules
+backend/*.log*
+frontend/herriot/node_modules
+frontend/herriot/*.log*
+frontend/herriot/.nuxt
+frontend/herriot/.nitro
+frontend/herriot/.cache
+frontend/herriot/.output
+frontend/herriot/.env
+frontend/herriot/dist
