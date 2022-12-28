@@ -43,7 +43,9 @@ const shownAnnouncements=computed(()=>{
     if(!announcements.value){
         return [];
     }
-    return announcements.value.reverse();
+    let ret=[...announcements.value];
+    ret.reverse();
+    return ret;
 });
 </script>
 <template>
