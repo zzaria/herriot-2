@@ -114,7 +114,7 @@ const beginEdit = (id) => {
                 </n-card>
 
                 <template #footer>
-                    <comments v-if="shownComments.length && !noChildren" :problem="problem" :comments="comments"
+                    <comments v-if="shownComments&&shownComments.length && !noChildren" :problem="problem" :comments="comments"
                         :parent="comment._id">
                     </comments>
                 </template>

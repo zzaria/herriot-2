@@ -94,14 +94,14 @@
 							<p>If you have problem editing permissions, you can add new problems and fill in information
 								for existing problems.</p>
 							<p> You can also help write some scripts to automatically import problems or make general
-								improvements to the website on Github.</p>
+								improvements to the website on <NuxtLink to="https://github.com/zzaria/herriot-2"><n-a>Github</n-a></NuxtLink>.</p>
 						</div>
 					</n-collapse-item>
 					<n-collapse-item title="FAQ" name="4">
 						<div>Couldn't think of any questions 💀</div>
 					</n-collapse-item>
-					<n-collapse-item title="Hello" name="5">
-						<div>Hello</div>
+					<n-collapse-item title="App" name="5">
+						<div><NuxtLink to="https://github.com/zzaria/herriot-2/releases/"><n-a>Download desktop app</n-a></NuxtLink></div>
 					</n-collapse-item>
 				</n-collapse>
 			</n-drawer-content>

@@ -169,13 +169,19 @@ const unEmbed = () => {
                 <n-layout has-sider sider-placement="right">
                     <n-layout>
                         <n-layout-header bordered class="p-4" id="problem">
-                            <n-h1>
-                                <n-skeleton v-if="loading" />
-                                <span v-if="!loading">{{ problem.name }}</span>
+                            <n-space justify="space-between">
+                                <n-h1>
+                                    <n-skeleton v-if="loading" />
+                                    <span v-if="!loading">{{ problem.name }}</span>
+                                </n-h1>
                                 <NuxtLink :to="`/problem/${problemId}/`">
-                                    <n-button type="tertiary" circle>#</n-button>
+                                    <n-button type="tertiary" circle>
+                                        <template #icon><n-icon>
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a3.5 3.5 0 0 0 5 0l4-4a3.5 3.5 0 0 0-5-5l-.5.5"></path><path d="M14 10a3.5 3.5 0 0 0-5 0l-4 4a3.5 3.5 0 0 0 5 5l.5-.5"></path></g></svg>
+                                        </n-icon></template>
+                                    </n-button>
                                 </NuxtLink>
-                            </n-h1>
+                            </n-space>
                             <NuxtLink :to="`/problem/${problemId}/edit`">
                                 <n-button secondary round type="primary"
                                     v-if="curUser && curUser.perms >= Constants.PROBLEM_PERM">Edit

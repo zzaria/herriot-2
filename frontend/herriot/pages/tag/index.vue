@@ -66,7 +66,7 @@ onMounted(() => {
                         New Collection New Collection New New New New New omg
                         <template #action>
                             <n-button tertiary type="primary" @click="newTag" class="w-full">
-                                <n-ellipsis>Create New Collection Create New Create Create Create</n-ellipsis>
+                                <n-ellipsis>Create New Collection</n-ellipsis>
                             </n-button>
                         </template>
                     </n-card>

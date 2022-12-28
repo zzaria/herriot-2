@@ -15,6 +15,9 @@ let { data: recommendedProblems } = useLazyFetch<Problem>(Constants.BACKEND + '/
     query: { filter: JSON.stringify({ sortKey: "random" }) }
 });
 const insertThumbnail = (problems) => problems.map(problem => {
+    if(problem.thumbnail==""){
+        problem.thumbnail=null;
+    }
     problem.thumbnail ??= Constants.RANDOM_THUMBNAIL(problem._id);
     return problem;
 });
@@ -35,14 +38,20 @@ const shownrecommendedProblems = computed(() => {
         return [];
     }
     return insertThumbnail(recommendedProblems.value);
-})
+});
+const shownAnnouncements=computed(()=>{
+    if(!announcements.value){
+        return [];
+    }
+    return announcements.value.reverse();
+});
 </script>
 <template>
     <div class="flex flex-col-reverse md:flex-row">
         <Title>Home</Title>
         <div class="md:w-2/5 bg-frostedglass-150 dark:bg-glass-600 p-2.5">
             <n-h1>Welcome{{ curUser && curUser.username ? ", " + curUser.username : "" }}</n-h1>
-            <Comments :comments="announcements ? announcements.reverse() : []" :problem="Constants.ANNOUNCEMENT_POST"
+            <Comments :comments="shownAnnouncements" :problem="Constants.ANNOUNCEMENT_POST"
                 noChildren />
         </div>
         <div class="md:w-3/5 bg-frostedglass-600 dark:bg-glass-900 p-2.5">

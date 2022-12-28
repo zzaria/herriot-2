@@ -47,6 +47,22 @@ onMounted(async () => {
   await refresh();
   loading.value = false;
 });
+
+const currentStep = ref(1);
+const currentStatus=ref("");
+const codeforceAccount=ref("");
+const codeforceMessage=ref("");
+const verifyCodeforce=async ()=>{
+  currentStatus.value="wait";
+  const {error}=await useFetch(Constants.BACKEND + '/api/user/codeforces', { method: 'POST', initialCache: false, headers: { usertoken: userToken.value },query:{account:codeforceAccount.value}});
+  if(error.value){
+    currentStatus.value="error";
+  }
+  else{
+    currentStatus.value="process";
+    currentStep.value++;
+  }
+}
 </script>
 
 <template>
@@ -152,8 +168,6 @@ onMounted(async () => {
             </div>
           </n-spin>
         </n-tab-pane>
-        <n-tab-pane name="" tab="None">
-        </n-tab-pane>
         <n-tab-pane name="Edit" tab="Edit" v-if="user.solved_tag">
           <n-space vertical>
             <n-breadcrumb>
@@ -171,16 +185,16 @@ onMounted(async () => {
 
             <n-space>
               <n-input-group>
-                <n-input-group-label>Picture</n-input-group-label>
-                <n-input v-model:value="user.profilePic"></n-input>
-              </n-input-group>
-              <n-input-group>
                 <n-input-group-label>Name</n-input-group-label>
                 <n-input v-model:value="user.username" maxlength="50" show-count></n-input>
               </n-input-group>
               <n-input-group>
                 <n-input-group-label>Old Password</n-input-group-label>
                 <n-input v-model:value="oldPassword" type="password"></n-input>
+              </n-input-group>
+              <n-input-group>
+                <n-input-group-label>Picture</n-input-group-label>
+                <n-input v-model:value="user.profilePic" clearable></n-input>
               </n-input-group>
             </n-space>
             <n-input-group>
@@ -198,9 +212,80 @@ onMounted(async () => {
             <n-text :type="message == 'Success' ? 'success' : 'error'">
               {{ message }}
             </n-text>
-            <n-button type="info" @click="updateUser">Update</n-button>
-            <n-button type="error" @click="logOut">Log Out</n-button>
+            <n-space>
+              <n-button type="info" @click="updateUser">Update</n-button>
+              <n-button type="error" @click="logOut">Log Out</n-button>
+            </n-space>
           </n-space>
+        </n-tab-pane>
+        <n-tab-pane name="oanfwcyeiu" tab="Link accounts" v-if="user.solved_tag">
+          <n-space vertical>
+            <n-breadcrumb>
+              <n-breadcrumb-item>
+                <NuxtLink to="/user">Users</NuxtLink>
+              </n-breadcrumb-item>
+              <n-breadcrumb-item v-if="!loading">{{ user.username }}</n-breadcrumb-item>
+              <n-breadcrumb-item>Link Accounts</n-breadcrumb-item>
+            </n-breadcrumb>
+
+            <n-thing>
+              <template #avatar>
+                <n-avatar>
+                  CF
+                </n-avatar>
+              </template>
+              <template #header>
+                Codeforces
+              </template>
+              <template #header-extra>
+                <NuxtLink to="https://codeforces.com/" target="_blank">
+                  <n-button circle size="small">
+                    <template #icon>
+                      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-5"></path><path d="M10 14L20 4"></path><path d="M15 4h5v5"></path></g></svg>
+                    </template>
+                  </n-button>
+                </NuxtLink>
+              </template>
+              <template #description>
+                https://codeforces.com/
+              </template>
+              Link your Codeforce account to get permissions for adding and editing problems and public tags.
+              <template #footer>
+                You need at least 1900 rating.
+              </template>
+              <template #action>
+                <NuxtLink to="https://codeforces.com/settings/social" target="_blank">
+                  <n-button size="small">
+                    Go to Codeforces
+                  </n-button>
+                </NuxtLink>
+              </template>
+            </n-thing>
+
+            <n-steps :current="currentStep" :status="currentStatus">
+              <n-step title="Set Name">
+                Change your first name (english) to <n-text code>herriot_{{ user._id }}</n-text> on Codeforce.
+                <n-button size="small" @click="currentStep++" :disabled="currentStep!=1" type="primary" >Done</n-button>
+              </n-step>
+              <n-step title="Enter Account">
+                Enter your codeforces account
+                <n-input v-model:value="codeforceAccount" :disabled="currentStep!=2"></n-input>
+                <n-space justify="space-between">
+                  <n-button size="tiny" @click="currentStep--;" :disabled="currentStep!=2" quaternary type="warning">Prev</n-button>
+                  <n-button size="tiny" @click="currentStep++;" :disabled="currentStep!=2" quaternary>Next</n-button>
+                </n-space>
+              </n-step>
+              <n-step title="Verify">
+                <n-space  justify="end">
+                  <n-button size="large" @click="verifyCodeforce" :disabled="currentStep!=3" type="primary">Check</n-button>
+                  <n-button @click="currentStep--; currentStatus='process'" :disabled="currentStep!=3" secondary type="warning" size="tiny" round>Go back</n-button>
+                </n-space>
+              </n-step>
+              <n-step title="Done" description="Your account has been updated" />
+            </n-steps>
+          </n-space>
+        </n-tab-pane>
+        <n-tab-pane name="lull" tab="Blank">
         </n-tab-pane>
       </n-tabs>
     </no-ssr>
