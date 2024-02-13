@@ -39,10 +39,26 @@ onMounted(() => {
                     <n-space vertical>
                         <n-layout has-sider>
                             <n-layout-sider show-trigger="bar" collapse-mode="width" :collapsed-width="60">
+                                External Identifier (for automatic problem adding)
+                            </n-layout-sider>
+                            <n-layout-content>
+                                <n-input v-model:value="problem.external_id"></n-input>
+                            </n-layout-content>
+                        </n-layout>
+                        <n-layout has-sider>
+                            <n-layout-sider show-trigger="bar" collapse-mode="width" :collapsed-width="60">
                                 Problem Name
                             </n-layout-sider>
                             <n-layout-content>
                                 <n-input v-model:value="problem.name"></n-input>
+                            </n-layout-content>
+                        </n-layout>
+                        <n-layout has-sider>
+                            <n-layout-sider show-trigger="bar" collapse-mode="width" :collapsed-width="60">
+                                Setters
+                            </n-layout-sider>
+                            <n-layout-content>
+                                <n-input v-model:value="problem.setter"></n-input>
                             </n-layout-content>
                         </n-layout>
                         <n-layout has-sider>
@@ -64,7 +80,7 @@ onMounted(() => {
                         </n-layout>
                         <n-layout has-sider>
                             <n-layout-sider show-trigger="bar" collapse-mode="width" :collapsed-width="60">
-                                Editorial
+                                Tutorial
                             </n-layout-sider>
                             <n-layout-content>
                                 <n-input type="textarea" v-model:value="problem.editorial" :autosize="{ minRows: 3 }">

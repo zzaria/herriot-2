@@ -9,7 +9,8 @@ const props = defineProps({
     comments: { default: []},
     parent: { default: null ,type:String},
     problem: {},
-    noChildren: { default: false },
+    noChildren: { default: false, type:Boolean},
+    postId: { default: null },
 });
 
 const title = ref("");
@@ -17,7 +18,7 @@ const content = ref("");
 const reply = ref(false);
 const edit = ref(null);
 const shownComments = computed(() => {
-    return props.comments.filter(comment => comment.problem == props.problem && comment.parent == props.parent);
+    return props.comments.filter(comment => comment.problem == props.problem && comment.parent == props.parent && (!props.postId || props.postId==comment._id));
 });
 
 const newPost = async () => {
@@ -66,6 +67,16 @@ const beginEdit = (id) => {
 
 <template>
     <div class="">
+        <n-button ghost round type="primary" @click="reply=!reply;content=title=edit=null"
+            v-if="userToken && (!noChildren || curUser.perms > Constants.ADMIN_PERM) && !postId">Comment
+        </n-button>
+        <n-card v-if="reply">
+            <n-space vertical>
+                <n-input v-model:value="title" />
+                <n-input type="textarea" v-model:value="content" />
+                <n-button @click="newPost">Submit</n-button>
+            </n-space>
+        </n-card>
         <template v-for="comment in shownComments">
             <n-card :title="comment.title" :bordered="false" :segmented="{ footer: 'soft' }" footer-style="padding:0"
                 content-style="padding-bottom: 0">
@@ -121,15 +132,5 @@ const beginEdit = (id) => {
             </n-card>
             <n-divider />
         </template>
-        <n-card v-if="reply">
-            <n-space vertical>
-                <n-input v-model:value="title" />
-                <n-input type="textarea" v-model:value="content" />
-                <n-button @click="newPost">Submit</n-button>
-            </n-space>
-        </n-card>
-        <n-button ghost round type="primary" @click="reply=!reply;content=title=edit=null"
-            v-if="userToken && (!noChildren || curUser.perms > Constants.ADMIN_PERM)">Comment
-        </n-button>
     </div>
 </template>

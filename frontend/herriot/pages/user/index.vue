@@ -10,7 +10,7 @@
                 </template>
                 <n-space vertical v-if="!pending">
                     <n-data-table :columns="columns" :data="shownUsers" :pagination="pagination" striped
-                        :single-line="false" />
+                        :single-line="false" :on-update:page="updPage" />
                     <n-input v-model:value="search" placeholder="Search" clearable />
                 </n-space>
             </n-card>
@@ -25,14 +25,20 @@ import { NA } from 'naive-ui';
 
 const { pending, data: users, refresh } = useUsers();
 const renderRating = (data, index) => {
-    return h(RatedText, { size: 15, rating: data.power, special: data.username === 'oyster' });
+    return h(RatedText, { size: 15, rating: data.power,  });
 };
 const router = useRouter();
 const renderUsername = (data, index) => {
     return h(NA, { onClick: () => router.push(`/user/${data._id}`) }, data.username);
 };
+    
+const page=ref(1);
+const updPage = (p) => {
+    page.value = p;
+};
+    
 const columns = [
-    { title: "#", key: "id", sorter: 'default' },
+    { title: "Index", key: "id", sorter: 'default', render: (_, index) => (page.value-1)*10 + index + 1},
     { title: "Name", key: "username", sorter: 'default', render: renderUsername },
     { title: "Power", key: "power", sorter: 'default', defaultSortOrder: 'descend', render: renderRating },
     { title: "Level", key: "level", sorter: 'default' },

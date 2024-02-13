@@ -1,5 +1,4 @@
 <template>
-
 	<!-- component -->
 	<!-- This is an example component -->
 	<div class="mx-auto">
@@ -22,14 +21,14 @@
 						<span
 							class="text-gray-400 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-gray-300 md:p-0">
 							<NuxtLink v-if="curUser && curUser.username" :to="`/user/${curUser._id}`">
-								<n-badge :value="levelUp" :dot="levelUp >= 5" @click="playLevelUp">
-									<RatedText :rating="curUser.power" :special="curUser.username == 'oyster'"
-										size="15">
-										{{ curUser.username }}
-									</RatedText>
-								</n-badge>
+								<RatedText :rating="curUser.power" :special="curUser.username == 'oyster'" size="15">
+									{{ curUser.username }}
+								</RatedText>
 							</NuxtLink>
 							<NuxtLink v-else :to="`/login`">Login</NuxtLink>
+							<n-badge :value="levelUp" :dot="levelUp == 1" @click="playLevelUp" class="ml-3">
+								O
+							</n-badge>
 						</span>
 					</div>
 				</div>
@@ -94,20 +93,35 @@
 							<p>If you have problem editing permissions, you can add new problems and fill in information
 								for existing problems.</p>
 							<p> You can also help write some scripts to automatically import problems or make general
-								improvements to the website on <NuxtLink to="https://github.com/zzaria/herriot-2"><n-a>Github</n-a></NuxtLink>.</p>
+								improvements to the website on <NuxtLink to="https://github.com/zzaria/herriot-2">
+									<n-a>Github</n-a></NuxtLink>.</p>
 						</div>
 					</n-collapse-item>
 					<n-collapse-item title="FAQ" name="4">
-						<div>Couldn't think of any questions 💀</div>
+						<n-collapse arrow-placement="right">
+							<n-collapse-item title="What is FAQ?" name="1">
+								<div>FAQ stands for "Frequently Asked Questions".</div>
+							</n-collapse-item>
+							<n-collapse-item title="Why did you make this FAQ" name="2">
+								<div>idk</div>
+							</n-collapse-item>
+						</n-collapse>
 					</n-collapse-item>
 					<n-collapse-item title="App" name="5">
-						<div><NuxtLink to="https://github.com/zzaria/herriot-2/releases/"><n-a>Download desktop app</n-a></NuxtLink></div>
+						<template #header-extra>
+							(in development)
+						</template>
+
+						<div>
+							<NuxtLink to="https://github.com/zzaria/herriot-2/releases/"><n-a>Download desktop app</n-a>
+							</NuxtLink>
+						</div>
 					</n-collapse-item>
 				</n-collapse>
 			</n-drawer-content>
 		</n-drawer>
-		<n-modal v-model:show="showLevelUp" :mask-closable="false" preset="dialog" title="You solved it!"
-			positive-text="Confirm" negative-text="wow">
+		<n-modal v-model:show="showLevelUp" :mask-closable="false" preset="dialog" title="You solved it!" positive-text="Ok"
+			negative-text="Close">
 			<n-space>
 				<n-progress type="circle" status="success"
 					:percentage="Math.round(Constants.EXP_TO_LEVEL(oldUser.experience).progress / Constants.EXP_TO_LEVEL(oldUser.experience).required * 10000) / 100">
@@ -121,8 +135,7 @@
 						+ {{ Math.round(curUser.power - oldOldUser.power) }}
 					</n-space>
 					<n-space>
-						<n-statistic label="Level"
-							:value="Constants.EXP_TO_LEVEL(oldUser.experience).level"></n-statistic>
+						<n-statistic label="Level" :value="Constants.EXP_TO_LEVEL(oldUser.experience).level"></n-statistic>
 						+ {{ curUser.experience - oldOldUser.experience }}
 					</n-space>
 				</n-space>
@@ -154,19 +167,17 @@ const showLevelUp = ref(false);
 const levelUp = useState("levelUp", () => 0);
 const oldUser = ref(JSON.parse(JSON.stringify(curUser.value)));
 const oldOldUser = ref();
-const playLevelUp = () => {
+const playLevelUp = async () => {
 	if (levelUp.value == 0) {
 		return;
 	}
 	oldOldUser.value = JSON.parse(JSON.stringify(oldUser.value));
+	await refresh();
 	showLevelUp.value = true;
 	levelUp.value = 0;
 	setTimeout(async () => {
-		await refresh();
-		setTimeout(() => {
-			oldUser.value = JSON.parse(JSON.stringify(curUser.value));
-		}, 2000);
-	}, 500);
+		oldUser.value = JSON.parse(JSON.stringify(curUser.value));
+	}, 2000);
 };
 </script>
 

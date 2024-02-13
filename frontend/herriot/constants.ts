@@ -1,4 +1,4 @@
-export const BACKEND="https://herriot-backend.onrender.com";//"http://localhost:3003"||
+export const BACKEND="http://localhost:3003";//"https://herriot-backend.onrender.com"
 export const DIFFICULTY_RANGE=[-1000,5000];
 export const QUALITY_RANGE=[0,5];
 export const TagPageLimit=50;
@@ -63,7 +63,7 @@ export const formatText=(str)=>{
     }
     str=str.replace(/(?:\r\n|\r|\n)/g, "<br>");
 
-    const replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+    const replacePattern1 = /((\s|^)(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
     str = str.replace(replacePattern1, '<a class="text-sky-300" href="$1" target="_blank">$1</a>');
 
     //URLs starting with "www." (without // before it, or it'd re-link the ones done above).

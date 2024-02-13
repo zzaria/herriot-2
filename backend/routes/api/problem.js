@@ -28,20 +28,26 @@ router.put("/:id", (req, res, next) => {
     }
     const { newProblem } = req.body;
     delete newProblem._id;
+    function strip_tags(html) {
+      args=['span', 'dd', 'b', 'i', 'u', 'p', 'br','ul','li','h1','h2','h3','h4','h5','img','iframe'];
+      return html.replace(/<(\/?)(\w+)[^>]*\/?>/g, (str, endMark, tag) => {
+        return args.includes(tag) ? str :'';
+      }).replace(/<!--.*?-->/g, '');
+    }
     if (newProblem.statement) {
-        newProblem.statement = newProblem.statement.replace(/(<([^>]+)>)/ig, '');
+        newProblem.statement = strip_tags(newProblem.statement);
     }
     if (newProblem.editorial) {
-        newProblem.editorial = newProblem.editorial.replace(/(<([^>]+)>)/ig, '');
+        newProblem.editorial = strip_tags(newProblem.editorial);
     }
     if (newProblem.solution) {
-        newProblem.solution = newProblem.solution.replace(/(<([^>]+)>)/ig, '');
+        newProblem.solution = strip_tags(newProblem.solution);
     }
     if (newProblem.data) {
-        newProblem.data = newProblem.data.replace(/(<([^>]+)>)/ig, '');
+        newProblem.data = strip_tags(newProblem.data);
     }
     if (newProblem.judge) {
-        newProblem.judge = newProblem.judge.replace(/(<([^>]+)>)/ig, '');
+        newProblem.judge = strip_tags(newProblem.judge);
     }
 
     Problem.findByIdAndUpdate(req.params.id, newProblem).then(()=>res.sendStatus(200))
@@ -72,7 +78,7 @@ router.get("/", async (req, res, next) => {
                 filter.quality = { $gte: qfilter.quality[0], $lte: qfilter.quality[1] };
             }
             if (qfilter.search && qfilter.search !== "") {
-                filter.name = { $regex: qfilter.search, $options: "$i" };
+                filter.name = { $regex: qfilter.search, $options: "i" };
             }
             if(qfilter.tags&&qfilter.tags.length||qfilter.antiTags&&qfilter.antiTags.length){
                 filter.tags={};
@@ -101,7 +107,7 @@ router.get("/", async (req, res, next) => {
         }
 
         const start = new Date();
-        const results = await Problem.find(filter).sort(sort).skip(skip).limit(200).select("name thumbnail difficulty quality deleted");
+        const results = await Problem.find(filter).sort(sort).skip(skip).limit(200).select("name setter thumbnail difficulty quality deleted");
         const count = await Problem.find(filter).countDocuments();
         res.status(200).send({count,results});
     } catch (error) {

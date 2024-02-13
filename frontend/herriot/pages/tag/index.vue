@@ -63,10 +63,10 @@ onMounted(() => {
                 </div>
                 <no-ssr>
                     <n-card title="New Collection" hoverable class="h-full">
-                        New Collection New Collection New New New New New omg
+                        New Collection New Collection New New New New New Collection
                         <template #action>
                             <n-button tertiary type="primary" @click="newTag" class="w-full">
-                                <n-ellipsis>Create New Collection</n-ellipsis>
+                                <n-ellipsis>Create Collection</n-ellipsis>
                             </n-button>
                         </template>
                     </n-card>

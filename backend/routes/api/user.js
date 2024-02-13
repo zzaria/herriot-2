@@ -12,6 +12,7 @@ const User = require('^models/User');
 const Tag = require('^models/Tag');
 const { userAuth } = require('^middleware');
 const { ObjectId } = require('mongodb');
+const fetch = require('node-fetch');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -116,6 +117,28 @@ router.get("/", async (req, res, next) => {
             res.sendStatus(500);
         });
 });
+router.post("/codeforces", async (req, res, next) => {
+    try {
+        if (!req.curUser) {
+            return res.sendStatus(400);
+        }
+        const { account } = req.query;
+        const response = await fetch("https://codeforces.com/api/user.info?handles=" + account);
+        let data = await response.json();
+        if (data.status == "FAILED") {
+            return res.sendStatus(404);
+        }
+        data=data.result[0];
+        if(data.firstName!="herriot_"+req.curUser&&data.maxRating>=1900){
+            return res.sendStatus(403);
+        }
+        await User.findByIdAndUpdate(req.curUser, { perms: Math.max(req.perms, constants.PROBLEM_PERM) })
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(400);
+    }
+});
 
 async function createUser(user, oldUsername = null, oldPassword = null) {
     error = [];
@@ -165,11 +188,11 @@ async function createUser(user, oldUsername = null, oldPassword = null) {
     if (!profilePic) {
         profilePic = "/images/profile_pics/defaults/" + Math.floor(Math.random() * 16 + 1);
     }
-    profilePic=profilePic.substring(0,1000);
+    profilePic = profilePic.substring(0, 1000);
 
-    description=sanitizeHtml(description);
-    description=description.trim();
-    description=description.substring(0,10000);
+    description = sanitizeHtml(description);
+    description = description.trim();
+    description = description.substring(0, 10000);
 
     return { username, password, profilePic, description };
 }

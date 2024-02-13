@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ProblemSchema = new Schema({
+    external_id: {type: String, trim:true, unique:true},
     name: { type: String, trim: true,required:true},
+    setter: {type: String, trim:true},
     thumbnail: { type: String, trim: true},
     judge: { type: String, trim: true},
     statement: { type: String, trim: true},

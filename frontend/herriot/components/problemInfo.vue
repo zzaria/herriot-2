@@ -10,8 +10,8 @@ const props = defineProps({
 });
 const problemId = props.problemIdProp;
 
-let { data: difficultyVote } = await useFetch(Constants.BACKEND + '/api/vote/', { method: 'GET', headers: { usertoken: userToken.value }, params: { type: 1, parent: problemId } });
-let { data: qualityVote } = await useFetch(Constants.BACKEND + '/api/vote/', { method: 'GET', headers: { usertoken: userToken.value }, params: { type: 2, parent: problemId } });
+let { data: difficultyVote, refresh:refreshDifficultyVote } = await useFetch(Constants.BACKEND + '/api/vote/', { method: 'GET', headers: { usertoken: userToken.value }, params: { type: 1, parent: problemId } });
+let { data: qualityVote, refresh:refreshQualityVote } = await useFetch(Constants.BACKEND + '/api/vote/', { method: 'GET', headers: { usertoken: userToken.value }, params: { type: 2, parent: problemId } });
 let { data: problem, refresh } = await useFetch<ProblemData>(Constants.BACKEND + '/api/problem/' + problemId, { method: 'GET', headers: { usertoken: userToken.value } });
 let { data: allPublicTags } = await usePublicTags();
 let { data: problemComments, refresh: refreshComments } = await useFetch<Post[]>(Constants.BACKEND + '/api/post/', { method: 'GET', params: { problem: problemId } });
@@ -113,8 +113,10 @@ const version = ref("");
 onMounted(async () => {
     loading.value = true;
     await refresh();
-    await refreshComments()
+    await refreshComments();
     loading.value = false;
+    await refreshDifficultyVote();
+    await refreshQualityVote();
     electron.value = window.electronAPI != null;
     if(electron.value){
         version.value="Node "+window.electronAPI.node()+"|Chrome "+window.electronAPI.node()+"|Electron "+window.electronAPI.node();
@@ -192,7 +194,7 @@ const unEmbed = () => {
                             <n-h2 prefix="bar">Problem Statement</n-h2>
                             <n-space vertical>
                                 <n-skeleton text repeat="3" v-if="loading" />
-                                <p v-html="Constants.formatText(problem.statement)" v-else></p>
+                                <p v-html="Constants.formatText(problem.statement) || 'No Statement Available Yet'" v-else></p>
                                 <n-card title="Public Tags">
                                     <n-button v-if="noSpoiler" @click="showSpoiler">Show Spoiler</n-button>
                                     <n-skeleton size="medium" v-if="loading" />
@@ -216,10 +218,10 @@ const unEmbed = () => {
                             </n-space>
                         </n-layout-content>
                         <n-layout-footer bordered class="p-4" id="solution">
-                            <n-h2 prefix="bar">Solution</n-h2>
+                            <n-h2 prefix="bar">Tutorial</n-h2>
                             <n-collapse>
                                 <n-collapse-item title="Show" name="1">
-                                    <div v-html="Constants.formatText(problem.editorial)"></div>
+                                    <div v-html="Constants.formatText(problem.editorial) || 'No Tutorial Available Yet'"></div>
                                 </n-collapse-item>
                             </n-collapse>
 
@@ -240,7 +242,7 @@ const unEmbed = () => {
                             <ratedText :rating="problem.difficulty" size="25" v-else></ratedText>
                             <n-skeleton v-if="loading" />
                             <span v-else>
-                                <n-rate readonly :value="problem.quality" size="large" />
+                                <n-rate allow-half readonly :value="problem.quality" size="large" />
                                 {{ problem.quality ?? "None" }}
                             </span>
                             <div v-if="electron">
@@ -265,19 +267,19 @@ const unEmbed = () => {
                     <n-gi span="2">
                         <n-card title="Submit/Judge">
                             <n-skeleton text v-if="loading" />
-                            <span v-html="Constants.formatText(problem.judge)" v-else />
+                            <span v-html="Constants.formatText(problem.judge) || 'None'" v-else />
                         </n-card>
                     </n-gi>
                     <n-gi>
                         <n-card title="Data">
                             <n-skeleton text repeat="2" v-if="loading" />
-                            <span v-html="Constants.formatText(problem.data)" v-else />
+                            <span v-html="Constants.formatText(problem.data) || 'None'" v-else />
                         </n-card>
                     </n-gi>
                     <n-gi>
                         <n-card title="Code">
                             <n-skeleton text repeat="2" v-if="loading" />
-                            <span v-html="Constants.formatText(problem.solution)" v-else />
+                            <span v-html="Constants.formatText(problem.solution) || 'None'" v-else />
                         </n-card>
                     </n-gi>
                 </n-grid>
@@ -296,7 +298,7 @@ const unEmbed = () => {
                                             <n-slider v-model:value="difficultyVote" step="100"
                                                 :min="Constants.DIFFICULTY_RANGE[0]"
                                                 :max="Constants.DIFFICULTY_RANGE[1]" />
-                                            <n-input-number v-model:value="difficultyVote" size="small"
+                                            <n-input-number v-model:value="difficultyVote" step="100" size="small"
                                                 placeholder="Unrated" />
                                         </div>
                                     </template>

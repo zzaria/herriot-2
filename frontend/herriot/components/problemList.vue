@@ -20,7 +20,7 @@ const renderRating = (data, index) => {
 };
 const renderName = (data, index) => {
     return h("div", { style: `background-color: ${problemColors.value[data._id]}; padding: 0.33rem; margin-top:-1px;` },
-        h("span", { class: "cursor-pointer", onClick: () => { showModal.value = true; modalProblem.value = data._id; } }, data.name));
+        h("span", { class: "cursor-pointer", onClick: () => { showModal.value = true; modalProblem.value = data._id; } }, (data.setter? (data.setter+" - "):"")+data.name));
 };
 const rowProps = (row) => {
     return { "data-problem": row._id, class: "problemRow" };
@@ -67,7 +67,7 @@ const addTag = async (tag) => {
         initialCache: false
     });
     if (tag == curUser.value.solved_tag) {
-        levelUp.value++;
+        levelUp.value+=selected.value.length;
     }
     await refreshCurUser();
     curUser.value.tags.forEach(tag => {
@@ -88,7 +88,6 @@ const updateShown = (object) => {
     }
     selected.value = selected2;
 };
-
 onMounted(() => {
     refresh();
     if (filter.value.sortKey && filter.value.sortOrder) {
@@ -115,12 +114,14 @@ onMounted(() => {
                 })
             }
         });
-        Sortable.create(el, {
-            multiDrag: true,
-            selectedClass: "selected",
-            multiDragKey: "CTRL",
-            sort: false,
-        });
+        if(window.innerWidth >= 768){
+            Sortable.create(el, {
+                multiDrag: true,
+                selectedClass: "selected",
+                multiDragKey: "CTRL",
+                sort: false,
+            });
+        }
         let publicTags2 = publicTags.value.reduce((items, tag) => { items[tag._id] = { name: tag.name }; return items; }, {});
         let privateTags = curUser.value.tags.filter(tag => tag.access == 0).map(tag => tag.tag).reduce((items, tag) => { items[tag._id] = { name: tag.name }; return items; }, {});
         let addTag2 = (tag) => addTag(tag);
@@ -176,12 +177,14 @@ watch(() => filter.value,
             if (!el) {
                 return;
             }
-            Sortable.create(el, {
-                multiDrag: true,
-                selectedClass: "selected",
-                multiDragKey: "CTRL",
-                sort: false,
-            });
+            if(window.innerWidth >= 768){
+                Sortable.create(el, {
+                    multiDrag: true,
+                    selectedClass: "selected",
+                    multiDragKey: "CTRL",
+                    sort: false,
+                });
+            }
         }, 300);
     },
     { deep: true }

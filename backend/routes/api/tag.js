@@ -17,7 +17,7 @@ router.get("/:id", async (req, res, next) => {
         if (!await tagViewAccess(tag, req.curUserData)) {
             return res.sendStatus(403);
         }
-        tag = await Tag.findById(tag).orFail().populate("users.user", ["username", "profilePic"]).populate("problems.problem", ["name", "difficulty", "quality", "thumbnail"]);
+        tag = await Tag.findById(tag).orFail().populate("users.user", ["username", "profilePic"]).populate("problems.problem", ["name", "difficulty", "quality", "thumbnail","setter"]);
         res.status(200).send(tag);
     } catch (error) {
         console.log(error);

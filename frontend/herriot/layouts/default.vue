@@ -22,7 +22,7 @@ useHead({
     { src: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js' },
   ],
   link: [
-    { rel: 'stylesheet', type: 'text/css', href:'https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.css' }
+    { rel: 'stylesheet', type: 'text/css', href:'https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.css' },
   ],
   titleTemplate: '%s | Herriot',
 });

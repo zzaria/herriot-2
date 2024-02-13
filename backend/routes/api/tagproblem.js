@@ -98,13 +98,11 @@ async function updateSolved(userId) {
             path: "problems.problem"
         }
     });
-    let solved = user.solved_tag.problems;
-    solved = solved.map(problem => problem.problem.difficulty).sort((a, b) => a - b);
+    let solved = user.solved_tag.problems.map(problem => problem.problem.difficulty);
+    solved = solved.map(d => !d&&d!==0? -1000:d);
+    solved = solved.sort((a, b) => a - b);
     let count = solved.length, xp = 0, power = 0;
     solved.forEach(d => {
-        if (!d && d !== 0) {
-            d = -1000;
-        }
         xp += 10 ** (d / 400);
         d = d >= 100 ? d : 100 / Math.exp((100 - d) / 100);
         power = power * constants.POWER_DECAY + d * (1 - constants.POWER_DECAY);

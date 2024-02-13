@@ -78,7 +78,7 @@ watch(
 			<n-input type="text" placeholder="Search" v-model:value="filter2.search" clearable />
 			<n-space vertical>
 				<n-space>
-					<n-checkbox v-model:checked="filter2.hasEditorial">Solution</n-checkbox>
+					<n-checkbox v-model:checked="filter2.hasEditorial">Tutorial</n-checkbox>
 					<n-checkbox v-model:checked="filter2.hasCode">Code</n-checkbox>
 					<n-checkbox v-model:checked="filter2.hasData">Data</n-checkbox>
 				</n-space>

@@ -63,6 +63,9 @@ const verifyCodeforce=async ()=>{
     currentStep.value++;
   }
 }
+
+const formatLargeNumber= x => x<1000000? Math.round(x):x.toExponential(2);
+  
 </script>
 
 <template>
@@ -108,17 +111,15 @@ const verifyCodeforce=async ()=>{
               </n-gi>
               <n-gi>
                 <n-statistic label="Experience">
-                  <n-number-animation show-separator :from="0" :to="user.experience" :active="true" />
+                  {{formatLargeNumber(user.experience)}}
                 </n-statistic>
               </n-gi>
               <n-gi>
                 <n-statistic label="Progress">
-                  <n-number-animation show-separator :from="0" :to="Constants.EXP_TO_LEVEL(user.experience).progress"
-                    :active="true" />
+                  {{formatLargeNumber(Constants.EXP_TO_LEVEL(user.experience).progress)}}
                   <template #suffix>
                     /
-                    <n-number-animation show-separator :from="0" :to="Constants.EXP_TO_LEVEL(user.experience).required"
-                      :active="true" />
+                    {{formatLargeNumber(Constants.EXP_TO_LEVEL(user.experience).required)}}
                   </template>
                 </n-statistic>
               </n-gi>

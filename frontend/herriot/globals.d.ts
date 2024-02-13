@@ -33,7 +33,9 @@ declare global{
     }
     interface Problem{
         _id:string,
+        external_id?:string,
         name:string,
+        setter?:string,
         thumbnail?:string,
         difficulty?:number,
         quality?:number,
